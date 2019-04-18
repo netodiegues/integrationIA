@@ -1,0 +1,89 @@
+version: '3.3'
+services:
+
+    dbExternalApi:        
+        container_name: dbExternalApi
+        image: mysql/mysql-server:5.7.23          
+        environment:
+            - MYSQL_ROOT_HOST=%
+            - MYSQL_DATABASE=service_ExternalApi
+            - MYSQL_USER=finch
+            - MYSQL_PASSWORD=finch
+            - MYSQL_ROOT_PASSWORD=a
+        command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+        ports:
+            - "3301:3306"        
+        deploy:
+            resources:
+                limits:
+                    memory: 256m
+                reservations:              
+                    memory: 256m
+        volumes:
+            - /var/lib/docker/volumes/dataExternalApi:/var/lib/mysql
+        networks:
+            - finch
+      
+    dbSecurity:        
+        container_name: dbSecurity
+        image: mysql/mysql-server:5.7.23          
+        environment:
+            - MYSQL_ROOT_HOST=%
+            - MYSQL_DATABASE=service_Security
+            - MYSQL_USER=finch
+            - MYSQL_PASSWORD=finch
+            - MYSQL_ROOT_PASSWORD=a
+        command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+        ports:
+            - "3302:3306"        
+        deploy:
+            resources:
+                limits:
+                    memory: 256m
+                reservations:              
+                    memory: 256m
+        volumes:
+            - /var/lib/docker/volumes/dataSecurity:/var/lib/mysql
+        networks:
+            - finch
+              
+    service-externalapi:
+        build:
+            dockerfile: externalApi.Dockerfile
+            context: .
+        image: finch/service-externalapi
+        container_name: service-externalapi
+        ports:
+            - "9001:7000"                
+        networks:
+            - finch
+        depends_on:
+            - "dbExternalApi"
+
+    service-security:
+        build:
+            dockerfile: security.Dockerfile
+            context: .
+        image: finch/service-security
+        container_name: service-security
+        ports:
+            - "9002:7000"                
+        networks:
+            - finch
+        depends_on:
+            - "dbSecurity"
+        
+    service-wrapper:
+        build:
+            dockerfile: wrapper.Dockerfile
+            context: .
+        image: finch/service-wrapper
+        container_name: service-wrapper
+        ports:
+            - "8000:8000"                
+        networks:
+            - finch
+            
+networks:
+    finch:
+        driver: bridge

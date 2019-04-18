@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    
+    <!-- Table ata -->
+    <changeSet id="1" author="jose.diegues">
+        
+        <createTable tableName="ata">
+            <column name="id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_solicitacao" type="bigint"/>              
+        </createTable>
+
+        <addPrimaryKey tableName="ata" columnNames="id" constraintName="pk_ata"/>
+        <addAutoIncrement tableName="ata" columnName="id" columnDataType="bigint"/>
+              
+    </changeSet>   
+    
+    <!-- Table ata -->
+    <changeSet id="2" author="jose.diegues">
+        
+        <createTable tableName="ataarquivo">
+            <column name="id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ata_id" type="bigint"/>
+            <column name="ata_link_arquivo" type="varchar(500)"/>
+        </createTable>
+
+        <addPrimaryKey tableName="ataarquivo" columnNames="id" constraintName="pk_ataarquivo"/>
+        <addAutoIncrement tableName="ataarquivo" columnName="id" columnDataType="bigint"/>
+                      
+        <addForeignKeyConstraint baseTableName="ataarquivo" constraintName="fk_ataarquivo_ata" baseColumnNames="ata_id" referencedTableName="ata" referencedColumnNames="id"/>
+        
+    </changeSet>   
+      
+</databaseChangeLog>

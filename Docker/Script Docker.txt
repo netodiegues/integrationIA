@@ -1,0 +1,18 @@
+-- criando rede virtual docker finch
+
+docker network create --driver bridge finch
+
+docker run -d -p 3302:3306 -m 256M --name dbSecurity -v /var/lib/docker/volumes/dataSecurity:/var/lib/mysql -e MYSQL_ROOT_HOST=% -e MYSQL_DATABASE=service_Security -e MYSQL_USER=finch -e MYSQL_PASSWORD=finch -e MYSQL_ROOT_PASSWORD=a --network finch mysql/mysql-server:5.7.23 --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+docker run -d -p 3301:3306 -m 256M --name dbExternalApi -v /var/lib/docker/volumes/dataExternalApi:/var/lib/mysql -e MYSQL_ROOT_HOST=% -e MYSQL_DATABASE=service_ExternalApi -e MYSQL_USER=finch -e MYSQL_PASSWORD=finch -e MYSQL_ROOT_PASSWORD=a --network finch mysql/mysql-server:5.7.23 --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+
+
+-- build images
+docker build -f externalApi.Dockerfile -t finch/service-externalapi .
+docker build -f security.Dockerfile -t finch/service-security .
+docker build -f wrapper.Dockerfile -t finch/service-wrapper .
+
+
+-- services
+docker run -d --network finch -p 9001:7000 --name service-externalapi finch/service-externalapi
+docker run -d --network finch -p 9002:7000 --name service-security finch/service-security
+docker run -d --network finch -p 8000:8000 --name service-wrapper finch/service-wrapper

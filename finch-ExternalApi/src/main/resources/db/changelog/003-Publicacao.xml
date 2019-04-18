@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    
+    <!-- Table publicacao -->
+    <changeSet id="1" author="jose.diegues">
+        
+        <createTable tableName="publicacao">
+            <column name="id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_publicacao" type="bigint"/>  
+            <column name="texto_publicacao" type="varchar(100)"/>
+            <column name="uf" type="varchar(2)"/>
+            <column name="sistema" type="varchar(10)"/>
+            
+        </createTable>
+
+        <addPrimaryKey tableName="publicacao" columnNames="id" constraintName="pk_publicacao"/>
+        <addAutoIncrement tableName="publicacao" columnName="id" columnDataType="bigint"/>
+              
+    </changeSet>   
+          
+</databaseChangeLog>
